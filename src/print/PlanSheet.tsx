@@ -1,6 +1,7 @@
 import { DISCLAIMER } from '../engine/rules'
 import { formatFeetInches } from '../engine/units'
 import { useConfigStore } from '../store/configStore'
+import { PRICES_AS_OF, usePriceStore } from '../store/priceStore'
 import { CutListTable } from '../ui/CutListTable'
 import { HardwareTable } from '../ui/HardwareTable'
 import { SideViewSVG } from './SideViewSVG'
@@ -24,12 +25,22 @@ const money = (n: number) => `$${n.toFixed(2)}`
 export function PlanSheet({ design, config, cutItems, pack, hardware, estimate }: Props) {
   const snapshot = useConfigStore((s) => s.snapshot)
   const setPrintMode = useConfigStore((s) => s.setPrintMode)
+  const includePricing = usePriceStore((s) => s.includePricing)
+  const setIncludePricing = usePriceStore((s) => s.setIncludePricing)
 
   return (
     <div className="plan-sheet">
       <div className="no-print plan-actions">
         <button onClick={() => window.print()}>Print</button>
         <button onClick={() => setPrintMode(false)}>Back to builder</button>
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={includePricing}
+            onChange={(e) => setIncludePricing(e.target.checked)}
+          />
+          <span>Include pricing (off = blank quote sheet for your lumber yard)</span>
+        </label>
       </div>
 
       <h1>Pergola Plan</h1>
@@ -66,33 +77,69 @@ export function PlanSheet({ design, config, cutItems, pack, hardware, estimate }
       <h2>Hardware</h2>
       <HardwareTable items={hardware} />
 
-      <h2>Cost estimate</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>Unit</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {estimate.lines.map((l) => (
-            <tr key={l.key}>
-              <td>{l.label}</td>
-              <td>{l.qty}</td>
-              <td>{l.unitPrice !== undefined ? money(l.unitPrice) : '—'}</td>
-              <td>{money(l.total)}</td>
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan={3}>Estimated total</td>
-            <td>{money(estimate.grandTotal)}</td>
-          </tr>
-        </tfoot>
-      </table>
+      {includePricing ? (
+        <>
+          <h2>Cost estimate</h2>
+          <p className="hint">Estimated prices as of {PRICES_AS_OF} — verify locally.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {estimate.lines.map((l) => (
+                <tr key={l.key}>
+                  <td>{l.label}</td>
+                  <td>{l.qty}</td>
+                  <td>{l.unitPrice !== undefined ? money(l.unitPrice) : '—'}</td>
+                  <td>{money(l.total)}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={3}>Estimated total</td>
+                <td>{money(estimate.grandTotal)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </>
+      ) : (
+        <>
+          <h2>Materials quote sheet</h2>
+          <p className="hint">Take this to your lumber yard for pricing.</p>
+          <table className="quote-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Unit price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {estimate.lines.map((l) => (
+                <tr key={l.key}>
+                  <td>{l.label}</td>
+                  <td>{l.qty}</td>
+                  <td className="blank-cell" />
+                  <td className="blank-cell" />
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={3}>Total</td>
+                <td className="blank-cell" />
+              </tr>
+            </tfoot>
+          </table>
+        </>
+      )}
 
       <h2>Notes</h2>
       <ul className="plan-notes">

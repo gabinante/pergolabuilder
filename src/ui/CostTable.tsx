@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { compareStockCaps } from '../engine/cost'
 import { formatFeetInches } from '../engine/units'
-import { usePriceStore } from '../store/priceStore'
+import { PRICES_AS_OF, usePriceStore } from '../store/priceStore'
 import type { CostEstimate } from '../engine/cost'
 import type { CutListItem } from '../engine/types'
 
@@ -24,7 +24,8 @@ export function CostTable({
   return (
     <div className="cost">
       <p className="hint">
-        Unit prices are editable estimates (saved in your browser).{' '}
+        Unit prices are editable estimates (defaults as of {PRICES_AS_OF}; regional prices vary
+        ±15%). Your edits are saved in this browser.{' '}
         <button className="link-button" onClick={resetPrices}>
           Reset to defaults
         </button>

@@ -309,6 +309,13 @@ tfoot td {
   display: flex;
   gap: 10px;
   margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.quote-table .blank-cell {
+  min-width: 70px;
+  border-bottom: 1px solid #999;
 }
 
 .plan-snapshot {
