@@ -2,48 +2,49 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 /** Shown next to price labels so users know how fresh the estimates are. */
-export const PRICES_AS_OF = 'July 2026'
+export const PRICES_AS_OF = 'July 2026, California'
 
 /**
  * Editable unit prices, persisted to localStorage. Lumber keys are
  * `${size}-${stockLengthInches}`; hardware keys match HardwareItem.key.
  *
- * Defaults are national ballpark estimates as of July 2026, triangulated from
- * a published lumber-yard PT price list (Intercity Lumber, FL) and a Lowe's
- * pricing guide — labeled as editable estimates in the UI. Regional prices
- * commonly vary ±15%.
+ * Defaults are California ballpark estimates as of July 2026: national prices
+ * triangulated from a published lumber-yard PT price list (Intercity Lumber,
+ * FL) and a Lowe's pricing guide, then scaled ~+20% for the documented West
+ * Coast premium (regional guides put it at 15-25%). Hardware is priced
+ * nationally (chain pricing is fairly uniform); concrete is bumped for CA.
  */
 export const DEFAULT_PRICES: Record<string, number> = {
-  '2x4-96': 6,
-  '2x4-120': 8.5,
-  '2x4-144': 10,
-  '2x4-192': 14,
-  '2x6-96': 9.5,
-  '2x6-120': 12.5,
-  '2x6-144': 14,
-  '2x6-192': 19,
-  '2x8-96': 13,
-  '2x8-120': 17,
-  '2x8-144': 19.5,
-  '2x8-192': 26,
-  '2x10-96': 15,
-  '2x10-120': 22,
-  '2x10-144': 27,
-  '2x10-192': 33,
-  '4x4-96': 12,
-  '4x4-120': 16.5,
-  '4x4-144': 18.5,
-  '4x4-192': 26,
-  '6x6-96': 28,
-  '6x6-120': 38,
-  '6x6-144': 45,
-  '6x6-192': 68,
+  '2x4-96': 7,
+  '2x4-120': 10,
+  '2x4-144': 12,
+  '2x4-192': 17,
+  '2x6-96': 11.5,
+  '2x6-120': 15,
+  '2x6-144': 17,
+  '2x6-192': 23,
+  '2x8-96': 15.5,
+  '2x8-120': 20.5,
+  '2x8-144': 23.5,
+  '2x8-192': 31,
+  '2x10-96': 18,
+  '2x10-120': 26.5,
+  '2x10-144': 32.5,
+  '2x10-192': 40,
+  '4x4-96': 14.5,
+  '4x4-120': 20,
+  '4x4-144': 22,
+  '4x4-192': 31,
+  '6x6-96': 34,
+  '6x6-120': 46,
+  '6x6-144': 54,
+  '6x6-192': 82,
   postBase: 38, // Simpson ABU66Z-style standoff base
   carriageBolt: 3, // 1/2" x 8" HDG + nut + 2 washers
   structuralScrew: 1, // TimberLOK 6" (~$0.82-1.78/ea by pack size)
   deckScrews: 10, // 1-lb box
-  concreteBag: 6.5, // 60-lb Quikrete
-  gravelBag: 5,
+  concreteBag: 8, // 60-lb Quikrete, CA pricing
+  gravelBag: 6,
 }
 
 interface PriceState {

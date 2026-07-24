@@ -24,8 +24,8 @@ export function CostTable({
   return (
     <div className="cost">
       <p className="hint">
-        Unit prices are editable estimates (defaults as of {PRICES_AS_OF}; regional prices vary
-        ±15%). Your edits are saved in this browser.{' '}
+        Unit prices are editable estimates (defaults as of {PRICES_AS_OF}; your local prices will
+        vary). Your edits are saved in this browser.{' '}
         <button className="link-button" onClick={resetPrices}>
           Reset to defaults
         </button>
