@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { DEFAULT_CONFIG } from '../engine/design'
+import { initialConfig } from '../urlConfig'
 import type { PergolaConfig } from '../engine/types'
 
 interface ConfigState {
@@ -12,7 +12,7 @@ interface ConfigState {
 }
 
 export const useConfigStore = create<ConfigState>((set) => ({
-  config: DEFAULT_CONFIG,
+  config: initialConfig(),
   printMode: false,
   snapshot: null,
   setConfig: (patch) => set((s) => ({ config: { ...s.config, ...patch } })),

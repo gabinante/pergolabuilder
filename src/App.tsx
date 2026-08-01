@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { costEstimate } from './engine/cost'
 import { KERF, aggregateCuts, packBoards } from './engine/cutlist'
 import { designPergola } from './engine/design'
@@ -12,8 +12,10 @@ import { CostTable } from './ui/CostTable'
 import { CutListTable } from './ui/CutListTable'
 import { HardwareTable } from './ui/HardwareTable'
 import { InputsPanel } from './ui/InputsPanel'
+import { ShareButton } from './ui/ShareButton'
 import { Tabs } from './ui/Tabs'
 import { Warnings } from './ui/Warnings'
+import { syncUrl } from './urlConfig'
 import './styles.css'
 
 export default function App() {
@@ -33,6 +35,13 @@ export default function App() {
     () => costEstimate(pack.purchases, hardware, prices),
     [pack, hardware, prices],
   )
+
+  // Mirror the config into the address bar (debounced: sliders fire every
+  // drag tick and Safari rate-limits replaceState).
+  useEffect(() => {
+    const timer = setTimeout(() => syncUrl(config), 200)
+    return () => clearTimeout(timer)
+  }, [config])
 
   if (printMode) {
     return (
@@ -58,9 +67,12 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <h1>Pergola Builder</h1>
-        <button className="primary" onClick={openPlanSheet}>
-          Plan sheet / print
-        </button>
+        <div className="topbar-actions">
+          <ShareButton />
+          <button className="primary" onClick={openPlanSheet}>
+            Plan sheet / print
+          </button>
+        </div>
       </header>
 
       <aside className="sidebar">

@@ -47,6 +47,11 @@ body {
   margin: 0;
 }
 
+.topbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
 button {
   font: inherit;
   cursor: pointer;
